@@ -12,6 +12,33 @@ from .internal import (
 )
 
 def SchurPol(n, kappa):
+    """
+    Schur polynomial of an integer partition.
+
+    Parameters
+    ----------
+    n : int
+        Positive integer, the number of variables of the polynomial.
+    kappa : IntegerPartition
+        An integer partition obtained with `sympy.combinatorics.partitions`.
+
+    Returns
+    -------
+    Poly
+        The Schur polynomial of `kappa`.
+    
+    Examples
+    --------
+    >>> from sympy.combinatorics.partitions import IntegerPartition
+    >>> from jackpy.jack import SchurPol
+    >>> p = SchurPol(2, IntegerPartition([2,1]))
+    >>> print(p)
+    Poly(x_1**2*x_0 + x_1*x_0**2, x_1, x_0, domain='ZZ')
+    >>> y = p.eval({x_0: 1, x_1: 1})
+    >>> print(y)
+    2
+
+    """
     def sch(m, k, nu):
         if len(nu) == 0 or nu[0] == 0 or m == 0:
             return constant_poly(1)
