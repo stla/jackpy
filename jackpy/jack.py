@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from gmpy2 import mpq, fac
-#from sympy.combinatorics.partitions import IntegerPartition
 import numpy as np
 from sympy import symbols, Poly
 from .internal import (
@@ -25,7 +24,7 @@ def SchurPol(n, kappa):
     Returns
     -------
     Poly
-        The Schur polynomial of `kappa`.
+        The Schur polynomial of `kappa`. It has integer coefficents.
     
     Examples
     --------
@@ -70,6 +69,36 @@ def SchurPol(n, kappa):
 
 
 def JackPol(n, kappa, alpha):
+    """
+    Jack polynomial of an integer partition.
+
+    Parameters
+    ----------
+    n : int
+        Positive integer, the number of variables of the polynomial.
+    kappa : IntegerPartition
+        An integer partition obtained with `sympy.combinatorics.partitions`.
+    alpha : number
+        A positive number, the parameter of the Jack polynomial.
+
+    Returns
+    -------
+    Poly
+        The Jack polynomial of `kappa` with parameter `alpha`. The type of 
+        its coefficients depend on the type of `alpha`.
+    
+    Examples
+    --------
+    >>> from gmpy2 import mpq
+    >>> from sympy.combinatorics.partitions import IntegerPartition
+    >>> from jackpy.jack import JackPol
+    >>>
+    >>> poly = JackPol(3, IntegerPartition([2, 1]), alpha = mpq(3, 2))
+    >>> print(poly)
+    Poly(7/2*x_0**2*x_1 + 7/2*x_0**2*x_2 + 7/2*x_0*x_1**2 + 6*x_0*x_1*x_2
+    + 7/2*x_0*x_2**2 + 7/2*x_1**2*x_2 + 7/2*x_1*x_2**2, x_0, x_1, x_2, domain='QQ')
+
+    """
     #stopifnot(isPositiveInteger(n), alpha >= 0, isPartition(lambda))
     def jac(m, k, mu, nu, beta):
         if len(nu) == 0 or nu[0] == 0 or m == 0:
@@ -110,6 +139,23 @@ def JackPol(n, kappa, alpha):
 
 
 def ZonalPol(m, kappa):
+    """
+    Zonal polynomial of an integer partition. Up to a normalization, this is 
+    the Jack polynomial of the integer partition with paramater `alpha = 2`.
+
+    Parameters
+    ----------
+    m : int
+        Positive integer, the number of variables of the polynomial.
+    kappa : IntegerPartition
+        An integer partition obtained with `sympy.combinatorics.partitions`.
+
+    Returns
+    -------
+    Poly
+        The zonal polynomial of `kappa`. It has rational coefficients.
+    
+    """
     alpha = mpq(2)
     jack = JackPol(m, kappa, alpha)
     (hooku, hookl) = hook_lengths_gmp(kappa, alpha)
@@ -119,6 +165,25 @@ def ZonalPol(m, kappa):
 
 
 def ZonalQPol(m, kappa):
+    """
+    Quaternionic zonal polynomial of an integer partition. Up to a 
+    normalization, this is the Jack polynomial of the integer partition with 
+    paramater `alpha = 1/2`.
+
+    Parameters
+    ----------
+    m : int
+        Positive integer, the number of variables of the polynomial.
+    kappa : IntegerPartition
+        An integer partition obtained with `sympy.combinatorics.partitions`.
+
+    Returns
+    -------
+    Poly
+        The quaternionic zonal polynomial of `kappa`. 
+        It has rational coefficients.
+    
+    """
     alpha = mpq(1, 2)
     jack = JackPol(m, kappa, alpha)
     (hooku, hookl) = hook_lengths_gmp(kappa, alpha)
