@@ -84,7 +84,7 @@ def JackPol(n, kappa, alpha):
 
 def ZonalPol(m, kappa):
     alpha = mpq(2)
-    jack = JackPolDK(m, kappa, alpha)
+    jack = JackPol(m, kappa, alpha)
     (hooku, hookl) = hook_lengths_gmp(kappa, alpha)
     jlambda = np.prod(hooku) * np.prod(hookl)
     n = int(np.sum(partition_to_array(kappa)))
@@ -93,7 +93,7 @@ def ZonalPol(m, kappa):
 
 def ZonalQPol(m, kappa):
     alpha = mpq(1, 2)
-    jack = JackPolDK(m, kappa, alpha)
+    jack = JackPol(m, kappa, alpha)
     (hooku, hookl) = hook_lengths_gmp(kappa, alpha)
     jlambda = np.prod(hooku) * np.prod(hookl)
     n = int(np.sum(partition_to_array(kappa)))
