@@ -1,3 +1,2 @@
 numpy
 sympy
-gmpy2
