@@ -1,5 +1,9 @@
 # jackpy
 
+<!-- badges: start -->
+[![Documentation status](https://readthedocs.org/projects/jackpy/badge/)](http://jackpy.readthedocs.io)
+<!-- badges: end -->
+
 Jack polynomials with Python.
 
 ```
