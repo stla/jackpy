@@ -133,10 +133,10 @@ Indices and tables
    tests.
 
    :Parameters:
-      *  **m** (*int*) â€“ Positive integer, the number of variables of
+      *  **m** (*int*) – Positive integer, the number of variables of
          the polynomial.
 
-      *  **kappa** (*IntegerPartition*) â€“ An integer partition
+      *  **kappa** (*IntegerPartition*) – An integer partition
          obtained with *sympy.combinatorics.partitions*.
 
    :Returns:
