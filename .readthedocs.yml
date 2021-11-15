@@ -1,6 +1,9 @@
 build:
   image: latest
-
+  apt_packages:
+    - libgmp
+  
+    
 python:
   version: 3.8
 
