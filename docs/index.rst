@@ -123,3 +123,24 @@ Indices and tables
 
    :Return type:
       Poly
+
+:raw-html:`<br />`
+	
+**jackpy.msf.msf_poly(m, kappa)**
+
+   Monomial symmetric polynomial. This function is not highly related
+   to the package; it has been introduced to facilitate some unit
+   tests.
+
+   :Parameters:
+      *  **m** (*int*) â€“ Positive integer, the number of variables of
+         the polynomial.
+
+      *  **kappa** (*IntegerPartition*) â€“ An integer partition
+         obtained with *sympy.combinatorics.partitions*.
+
+   :Returns:
+      The monomial symmetric polynomial corresponding to *kappa*.
+
+   :Return type:
+      Poly

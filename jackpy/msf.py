@@ -17,6 +17,23 @@ def perms(mu):
 
 
 def msf_poly(m, kappa):
+    """
+    Monomial symmetric polynomial. This function is not highly related to the 
+    package; it has been introduced to facilitate some unit tests.
+
+    Parameters
+    ----------
+    m : int
+        Positive integer, the number of variables of the polynomial.
+    kappa : IntegerPartition
+        An integer partition obtained with `sympy.combinatorics.partitions`.
+
+    Returns
+    -------
+    Poly
+        The monomial symmetric polynomial corresponding to `kappa`.
+
+    """
     kappa_ = partition_to_array(kappa)
     n = len(kappa_)
     if n > m:

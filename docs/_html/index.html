@@ -45,27 +45,29 @@
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 <p><span class="raw-html"><br /></span></p>
-<span class="target" id="module-jackpy.jack"></span><dl class="py function">
-<dt class="sig sig-object py" id="jackpy.jack.JackPol">
-<span class="sig-prename descclassname"><span class="pre">jackpy.jack.</span></span><span class="sig-name descname"><span class="pre">JackPol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jackpy.jack.JackPol" title="Permalink to this definition">¶</a></dt>
-<dd><p>Jack polynomial of an integer partition.</p>
+<p><strong>jackpy.jack.JackPol(n, kappa, alpha)</strong></p>
+<blockquote>
+<div><p>Jack polynomial of an integer partition.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n</strong> (<em>int</em>) – Positive integer, the number of variables of the polynomial.</p></li>
-<li><p><strong>kappa</strong> (<em>IntegerPartition</em>) – An integer partition obtained with <cite>sympy.combinatorics.partitions</cite>.</p></li>
-<li><p><strong>alpha</strong> (<em>number</em>) – A positive number, the parameter of the Jack polynomial.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Positive integer, the number of variables of
+the polynomial.</p></li>
+<li><p><strong>kappa</strong> (<em>IntegerPartition</em>) – An integer partition
+obtained with <em>sympy.combinatorics.partitions</em>.</p></li>
+<li><p><strong>alpha</strong> (<em>number</em>) – A positive number, the parameter of
+the Jack polynomial.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The Jack polynomial of <cite>kappa</cite> with parameter <cite>alpha</cite>. The type of
-its coefficients depend on the type of <cite>alpha</cite>.</p>
+<dd class="field-even"><p>The Jack polynomial of <em>kappa</em> with parameter <em>alpha</em>. The type
+of its coefficients depend on the type of <em>alpha</em>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Poly</p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
+<p>-[ Examples ]-</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">gmpy2</span> <span class="kn">import</span> <span class="n">mpq</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sympy.combinatorics.partitions</span> <span class="kn">import</span> <span class="n">IntegerPartition</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">jackpy.jack</span> <span class="kn">import</span> <span class="n">JackPol</span>
@@ -76,27 +78,27 @@ its coefficients depend on the type of <cite>alpha</cite>.</p>
 <span class="go">+ 7/2*x_0*x_2**2 + 7/2*x_1**2*x_2 + 7/2*x_1*x_2**2, x_0, x_1, x_2, domain=&#39;QQ&#39;)</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jackpy.jack.SchurPol">
-<span class="sig-prename descclassname"><span class="pre">jackpy.jack.</span></span><span class="sig-name descname"><span class="pre">SchurPol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jackpy.jack.SchurPol" title="Permalink to this definition">¶</a></dt>
-<dd><p>Schur polynomial of an integer partition.</p>
+</div></blockquote>
+<p><strong>jackpy.jack.SchurPol(n, kappa)</strong></p>
+<blockquote>
+<div><p>Schur polynomial of an integer partition.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n</strong> (<em>int</em>) – Positive integer, the number of variables of the polynomial.</p></li>
-<li><p><strong>kappa</strong> (<em>IntegerPartition</em>) – An integer partition obtained with <cite>sympy.combinatorics.partitions</cite>.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Positive integer, the number of variables of
+the polynomial.</p></li>
+<li><p><strong>kappa</strong> (<em>IntegerPartition</em>) – An integer partition
+obtained with <em>sympy.combinatorics.partitions</em>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The Schur polynomial of <cite>kappa</cite>. It has integer coefficents.</p>
+<dd class="field-even"><p>The Schur polynomial of <em>kappa</em>. It has integer coefficents.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Poly</p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
+<p>-[ Examples ]-</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sympy.combinatorics.partitions</span> <span class="kn">import</span> <span class="n">IntegerPartition</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">jackpy.jack</span> <span class="kn">import</span> <span class="n">SchurPol</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">SchurPol</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">IntegerPartition</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]))</span>
@@ -107,52 +109,75 @@ its coefficients depend on the type of <cite>alpha</cite>.</p>
 <span class="go">2</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jackpy.jack.ZonalPol">
-<span class="sig-prename descclassname"><span class="pre">jackpy.jack.</span></span><span class="sig-name descname"><span class="pre">ZonalPol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jackpy.jack.ZonalPol" title="Permalink to this definition">¶</a></dt>
-<dd><p>Zonal polynomial of an integer partition. Up to a normalization, this is
-the Jack polynomial of the integer partition with paramater <cite>alpha = 2</cite>.</p>
+</div></blockquote>
+<p><strong>jackpy.jack.ZonalPol(m, kappa)</strong></p>
+<blockquote>
+<div><p>Zonal polynomial of an integer partition. Up to a normalization,
+this is the Jack polynomial of the integer partition with paramater
+<em>alpha = 2</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>m</strong> (<em>int</em>) – Positive integer, the number of variables of the polynomial.</p></li>
-<li><p><strong>kappa</strong> (<em>IntegerPartition</em>) – An integer partition obtained with <cite>sympy.combinatorics.partitions</cite>.</p></li>
+<li><p><strong>m</strong> (<em>int</em>) – Positive integer, the number of variables of
+the polynomial.</p></li>
+<li><p><strong>kappa</strong> (<em>IntegerPartition</em>) – An integer partition
+obtained with <em>sympy.combinatorics.partitions</em>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The zonal polynomial of <cite>kappa</cite>. It has rational coefficients.</p>
+<dd class="field-even"><p>The zonal polynomial of <em>kappa</em>. It has rational coefficients.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Poly</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jackpy.jack.ZonalQPol">
-<span class="sig-prename descclassname"><span class="pre">jackpy.jack.</span></span><span class="sig-name descname"><span class="pre">ZonalQPol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jackpy.jack.ZonalQPol" title="Permalink to this definition">¶</a></dt>
-<dd><p>Quaternionic zonal polynomial of an integer partition. Up to a
-normalization, this is the Jack polynomial of the integer partition with
-paramater <cite>alpha = 1/2</cite>.</p>
+</div></blockquote>
+<p><strong>jackpy.jack.ZonalQPol(m, kappa)</strong></p>
+<blockquote>
+<div><p>Quaternionic zonal polynomial of an integer partition. Up to a
+normalization, this is the Jack polynomial of the integer partition
+with paramater <em>alpha = 1/2</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>m</strong> (<em>int</em>) – Positive integer, the number of variables of the polynomial.</p></li>
-<li><p><strong>kappa</strong> (<em>IntegerPartition</em>) – An integer partition obtained with <cite>sympy.combinatorics.partitions</cite>.</p></li>
+<li><p><strong>m</strong> (<em>int</em>) – Positive integer, the number of variables of
+the polynomial.</p></li>
+<li><p><strong>kappa</strong> (<em>IntegerPartition</em>) – An integer partition
+obtained with <em>sympy.combinatorics.partitions</em>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The quaternionic zonal polynomial of <cite>kappa</cite>.
-It has rational coefficients.</p>
+<dd class="field-even"><p>The quaternionic zonal polynomial of <em>kappa</em>. It has rational
+coefficients.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Poly</p>
 </dd>
 </dl>
-</dd></dl>
-
+</div></blockquote>
+<p><span class="raw-html"><br /></span></p>
+<p><strong>jackpy.msf.msf_poly(m, kappa)</strong></p>
+<blockquote>
+<div><p>Monomial symmetric polynomial. This function is not highly related
+to the package; it has been introduced to facilitate some unit
+tests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>m</strong> (<em>int</em>) â€“ Positive integer, the number of variables of
+the polynomial.</p></li>
+<li><p><strong>kappa</strong> (<em>IntegerPartition</em>) â€“ An integer partition
+obtained with <em>sympy.combinatorics.partitions</em>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The monomial symmetric polynomial corresponding to <em>kappa</em>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Poly</p>
+</dd>
+</dl>
+</div></blockquote>
 </section>
 
 
