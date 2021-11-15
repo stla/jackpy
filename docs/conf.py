@@ -33,7 +33,8 @@ release = '0.1.0'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
-    'sphinx.ext.intersphinx'
+    'sphinx.ext.intersphinx',
+    'sphinxcontrib.restbuilder'
 ]
 napoleon_google_docstring = False
 napoleon_numpy_docstring = True
