@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from gmpy2 import mpq, fac
+from gmpy2 import mpq, mpz, fac
 import numpy as np
 from sympy import symbols, Poly
 from .internal import (
@@ -7,7 +7,8 @@ from .internal import (
     hook_lengths_gmp,
     _N,
     _betaratio,
-    constant_poly
+    constant_poly,
+    _is_number
 )
 
 def SchurPol(n, kappa):
@@ -38,6 +39,12 @@ def SchurPol(n, kappa):
     2
 
     """
+    if not isinstance(n, int):
+        raise ValueError("`n` must be a integer.")
+    if n < 1:
+        raise ValueError("`n` must be at least one.")
+    if not isinstance(kappa, IntegerPartition):
+        raise ValueError("`kappa` must be a SymPy integer partition.")
     def sch(m, k, nu):
         if len(nu) == 0 or nu[0] == 0 or m == 0:
             return constant_poly(1)
@@ -99,7 +106,16 @@ def JackPol(n, kappa, alpha):
     + 7/2*x_0*x_2**2 + 7/2*x_1**2*x_2 + 7/2*x_1*x_2**2, x_0, x_1, x_2, domain='QQ')
 
     """
-    #stopifnot(isPositiveInteger(n), alpha >= 0, isPartition(lambda))
+    if not isinstance(n, int):
+        raise ValueError("`n` must be a integer.")
+    if n < 1:
+        raise ValueError("`n` must be at least one.")
+    if not isinstance(kappa, IntegerPartition):
+        raise ValueError("`kappa` must be a SymPy integer partition.")
+    if not _is_number(alpha) and type(alpha) != type(mpz(0)) and type(alpha) != type(mpq(0)):
+        raise ValueError("`alpha` must be a real number.")
+    if alpha <= 0:
+        raise ValueError("`alpha` must be positive.")
     def jac(m, k, mu, nu, beta):
         if len(nu) == 0 or nu[0] == 0 or m == 0:
             return constant_poly(1)
@@ -156,6 +172,12 @@ def ZonalPol(m, kappa):
         The zonal polynomial of `kappa`. It has rational coefficients.
     
     """
+    if not isinstance(m, int):
+        raise ValueError("`m` must be a integer.")
+    if m < 1:
+        raise ValueError("`m` must be at least one.")
+    if not isinstance(kappa, IntegerPartition):
+        raise ValueError("`kappa` must be a SymPy integer partition.")
     alpha = mpq(2)
     jack = JackPol(m, kappa, alpha)
     (hooku, hookl) = hook_lengths_gmp(kappa, alpha)
@@ -184,6 +206,12 @@ def ZonalQPol(m, kappa):
         It has rational coefficients.
     
     """
+    if not isinstance(m, int):
+        raise ValueError("`m` must be a integer.")
+    if m < 1:
+        raise ValueError("`m` must be at least one.")
+    if not isinstance(kappa, IntegerPartition):
+        raise ValueError("`kappa` must be a SymPy integer partition.")
     alpha = mpq(1, 2)
     jack = JackPol(m, kappa, alpha)
     (hooku, hookl) = hook_lengths_gmp(kappa, alpha)

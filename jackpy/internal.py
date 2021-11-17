@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from sympy import symbols, Poly
+import numbers
+
+def _is_number(x):
+    return isinstance(x, numbers.Number) and (not isinstance(x, complex))
 
 def partition_to_array(mu):
     d = mu.as_dict()
