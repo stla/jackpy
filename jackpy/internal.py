@@ -8,6 +8,8 @@ def _is_number(x):
 
 def partition_to_array(mu):
     d = mu.as_dict()
+    if len(d) == 0:
+        return np.asarray([], dtype=int)
     return np.repeat(list(d.keys()), list(d.values()))
 
 
@@ -39,6 +41,8 @@ def _betaratio(kappa, mu, k, alpha):
 
 def _N(kappa, mu):
     n = len(kappa)
+    if n == 0:
+        return 0
     kappa = kappa + 1
     M = np.array([np.prod(kappa[(i+1):]) for i in range(n)])
     return np.sum(mu * M)
