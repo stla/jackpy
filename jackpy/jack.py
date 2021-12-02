@@ -2,6 +2,7 @@
 from gmpy2 import mpq, mpz, fac
 import numpy as np
 from sympy import symbols, Poly
+from sympy.combinatorics.partitions import IntegerPartition
 from .internal import (
     partition_to_array,
     hook_lengths_gmp,
