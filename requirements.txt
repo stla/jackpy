@@ -1,4 +1,4 @@
 numpy
 sympy
-gnp
+gmp
 sphinxcontrib-restbuilder
