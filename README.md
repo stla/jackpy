@@ -6,7 +6,7 @@
 
 Jack polynomials with Python.
 
-```
+```python
 >>> from gmpy2 import mpq
 >>> from sympy.combinatorics.partitions import IntegerPartition
 >>> from jackpy.jack import JackPol
