@@ -2,7 +2,10 @@
 name = "jackpy"
 version = "0.1.0"
 description = "Jack polynomials."
+homepage = "https://github.com/stla/jackpy"
 authors = ["Stéphane Laurent <laurent_step@outlook.fr>"]
+documentation = "https://jackpy.readthedocs.io/en/latest/"
+keywords = ["Jack polynomials", "Schur polynomials", "zonal polynomials", "multivariate polynomials", "symmetric polynomials"]
 license = "GPL-3.0-only"
 readme = "README.md"
 
