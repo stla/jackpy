@@ -1,4 +1,4 @@
-# jackpy
+# jackpolynomials
 
 <!-- badges: start -->
 [![Documentation status](https://readthedocs.org/projects/jackpy/badge/)](http://jackpy.readthedocs.io)

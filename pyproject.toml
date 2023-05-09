@@ -1,5 +1,8 @@
 [tool.poetry]
-name = "jackpy"
+name = "jackpolynomials"
+packages = [
+    { include = "jackpy" },
+]
 version = "0.1.0"
 description = "Jack polynomials."
 homepage = "https://github.com/stla/jackpy"
