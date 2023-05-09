@@ -7,6 +7,3 @@ build:
   apt_packages:
     - libgmp
   
-
-
-requirements_file: requirements.txt
