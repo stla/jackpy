@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from gmpy2 import fac
 import numpy as np
 from sympy import symbols, Poly
 from numbers import Rational, Real
@@ -19,7 +20,7 @@ def __partition_to_array__(mu):
     return np.repeat(list(d.keys()), list(d.values()))
 
 
-def __hook_lengths_gmp__(mu, alpha):
+def __hook_lengths__(mu, alpha):
     mu_prime = np.array(mu.conjugate)
     mu_ = __partition_to_array__(mu)
     i = np.repeat(np.arange(len(mu_)), mu_)
@@ -27,6 +28,12 @@ def __hook_lengths_gmp__(mu, alpha):
     x = mu_prime[j] - i + alpha*(mu_[i] - j) 
     return (x - 1, x - alpha)
 
+def __Jack_C_coefficient__(kappa, alpha):
+    (hooku, hookl) = __hook_lengths__(kappa, alpha)
+    jlambda = np.prod(hooku) * np.prod(hookl)
+    k = int(np.sum(__partition_to_array__(kappa)))
+    return alpha**k * fac(k) / jlambda
+    
 
 def __betaratio__(kappa, mu, k, alpha):
     k += 1

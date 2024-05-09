@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-from gmpy2 import mpq, fac
+from gmpy2 import mpq
 import numpy as np
-from sympy import symbols, Poly
+from sympy import symbols, Poly, Symbol
 from sympy.combinatorics.partitions import IntegerPartition
-from .internal import (
+from jackpy.internal import (
     __get_domain__,
     __partition_to_array__,
-    __hook_lengths_gmp__,
     __N__,
-    __betaratio__
+    __betaratio__,
+    __Jack_C_coefficient__
 )
-from numbers import Real 
+from numbers import Real, Number 
 
 def SchurPol(n, kappa):
     """
@@ -78,7 +78,7 @@ def SchurPol(n, kappa):
 
 def JackPol(n, kappa, alpha):
     """
-    Jack polynomial of an integer partition.
+    Jack polynomial of an integer partition, with given Jack parameter.
 
     Parameters
     ----------
@@ -112,11 +112,16 @@ def JackPol(n, kappa, alpha):
         raise ValueError("`n` must be a strictly positive integer.")
     if not isinstance(kappa, IntegerPartition):
         raise ValueError("`kappa` must be a SymPy integer partition.")
-    if not isinstance(alpha, Real):
-        raise ValueError("`alpha` must be a real number.")
-    if alpha <= 0:
-        raise ValueError("`alpha` must be positive.")
-    domain = __get_domain__(alpha)
+    if isinstance(alpha, Number):
+        if not isinstance(alpha, Real):
+            raise ValueError("`alpha` must be a real number.")
+        if alpha <= 0:
+            raise ValueError("`alpha` must be positive.")
+        domain = __get_domain__(alpha)
+    elif isinstance(alpha, Symbol):
+        domain = 'QQ(alpha)'
+    else:
+        raise ValueError("`alpha` must be a number.")
     variables = [symbols(f'x_{i}') for i in range(1, n+1)]
     x = [Poly(v, *variables, domain=domain) for v in variables]
     def jac(m, k, mu, nu, beta):
@@ -178,10 +183,7 @@ def ZonalPol(n, kappa):
     """
     alpha = mpq(2)
     jack = JackPol(n, kappa, alpha)
-    (hooku, hookl) = __hook_lengths_gmp__(kappa, alpha)
-    jlambda = np.prod(hooku) * np.prod(hookl)
-    k = int(np.sum(__partition_to_array__(kappa)))
-    return (alpha**k * fac(k) / jlambda) * jack
+    return __Jack_C_coefficient__(kappa, alpha) * jack
 
 
 def ZonalQPol(n, kappa):
@@ -206,7 +208,36 @@ def ZonalQPol(n, kappa):
     """
     alpha = mpq(1, 2)
     jack = JackPol(n, kappa, alpha)
-    (hooku, hookl) = __hook_lengths_gmp__(kappa, alpha)
-    jlambda = np.prod(hooku) * np.prod(hookl)
-    k = int(np.sum(__partition_to_array__(kappa)))
-    return (alpha**k * fac(k) / jlambda) * jack
+    return __Jack_C_coefficient__(kappa, alpha) * jack
+
+def JackSymbolicPol(n, kappa):
+    """
+    Jack polynomial of an integer partition, with symbolic Jack parameter.
+
+    Parameters
+    ----------
+    n : int
+        Positive integer, the number of variables of the polynomial.
+    kappa : IntegerPartition
+        An integer partition obtained with `sympy.combinatorics.partitions`.
+
+    Returns
+    -------
+    Poly
+        The Jack polynomial of `kappa` in `n` variables `x_1`, ..., `x_n`, 
+        with symbolic Jack parameter denoted by `alpha`. The domain of 
+        this polynomial is `'QQ(alpha)`.
+    
+    Examples
+    --------
+    >>> from gmpy2 import mpq
+    >>> from sympy.combinatorics.partitions import IntegerPartition
+    >>> from jackpy.jack import JackSymbolicPol
+    >>>
+    >>> poly = JackSymbolicPol(3, IntegerPartition([2, 1]))
+    >>> print(poly)
+    Poly(7/2*x_1**2*x_2 + 7/2*x_1**2*x_3 + 7/2*x_1*x_2**2 + 6*x_1*x_2*x_3
+    + 7/2*x_1*x_3**2 + 7/2*x_2**2*x_3 + 7/2*x_2*x_3**2, x_1, x_2, x3, domain='QQ')
+
+    """
+    return JackPol(n, kappa, symbols("alpha"))
