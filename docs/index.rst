@@ -16,6 +16,8 @@ Jack polynomials. Schur polynomials appear in combinatorics. Zonal
 polynomials have applications in statistics, and they appear in the 
 hypergeometric functions of a matrix argument.
 
+As of version 1.0.0, it is possible to get a Jack polynomial with a 
+symbolic Jack parameter in its coefficients.
 
 Indices and tables
 ==================

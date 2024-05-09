@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from gmpy2 import mpq
 from sympy.combinatorics.partitions import IntegerPartition
-from jackpy.jack import JackPol
+from jackpy.jack import JackPol, SchurPol
 from jackpy.monomial_symmetric import monomial_symmetric_polynomial
 
 def test_jackpol():
@@ -19,3 +19,10 @@ def test_jackpol():
     )
     obtained = JackPol(m, mu, alpha)
     assert obtained == expected
+
+def test_jack_p_pol_is_schurpol():
+    mu = IntegerPartition([3,2,1])
+    n = 4
+    expected = SchurPol(n, mu)
+    obtained = JackPol(n, mu, mpq(1), which = 'P')
+    assert obtained == expected.set_domain('QQ')

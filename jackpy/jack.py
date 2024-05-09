@@ -8,7 +8,9 @@ from jackpy.internal import (
     __partition_to_array__,
     __N__,
     __betaratio__,
-    __Jack_C_coefficient__
+    __Jack_C_coefficient__,
+    __Jack_P_coefficient__,
+    __Jack_Q_coefficient__
 )
 from numbers import Real, Number 
 
@@ -54,8 +56,9 @@ def SchurPol(n, kappa):
             return Poly(0, *variables, domain='ZZ')
         if m == 1:
             return x[0]**nu[0]
-        s = S[__N__(kappa_, nu)-1, m-1]
-        if s is not None:
+        N = __N__(kappa_, nu)
+        s = S[N-1, m-1]
+        if k == 1 and s is not None:
             return s
         s = sch(m-1, 1, nu)
         i = k
@@ -76,7 +79,7 @@ def SchurPol(n, kappa):
     return sch(n, 1, kappa_)
 
 
-def JackPol(n, kappa, alpha):
+def JackPol(n, kappa, alpha, which = 'J'):
     """
     Jack polynomial of an integer partition, with given Jack parameter.
 
@@ -88,6 +91,8 @@ def JackPol(n, kappa, alpha):
         An integer partition obtained with `sympy.combinatorics.partitions`.
     alpha : number
         A positive number, the parameter of the Jack polynomial.
+    which: character
+        Which Jack polynomial, either `'J'`, `'C'`, `'P'` or `'Q'`.
 
     Returns
     -------
@@ -122,6 +127,8 @@ def JackPol(n, kappa, alpha):
         domain = 'QQ(alpha)'
     else:
         raise ValueError("`alpha` must be a number.")
+    if not which in ['J', 'C', 'P', 'Q']:
+        raise ValueError("`which` must be either 'J', 'C', 'P' or 'Q'.")
     variables = [symbols(f'x_{i}') for i in range(1, n+1)]
     x = [Poly(v, *variables, domain=domain) for v in variables]
     def jac(m, k, mu, nu, beta):
@@ -159,7 +166,15 @@ def JackPol(n, kappa, alpha):
         return s
     kappa_ = __partition_to_array__(kappa)
     S = np.full((__N__(kappa_,kappa_), n), None)
-    return jac(n, 0, kappa_, kappa_, 1)
+    jp = jac(n, 0, kappa_, kappa_, 1)
+    if which != 'J':
+        if which == 'C':
+            jp = __Jack_C_coefficient__(kappa, alpha) * jp
+        elif which == 'P':
+            jp = __Jack_P_coefficient__(kappa, alpha) * jp
+        else:
+            jp = __Jack_Q_coefficient__(kappa, alpha) * jp
+    return jp
 
 
 def ZonalPol(n, kappa):
@@ -181,9 +196,7 @@ def ZonalPol(n, kappa):
         `x_1`, ..., `x_n`, with rational coefficients.
     
     """
-    alpha = mpq(2)
-    jack = JackPol(n, kappa, alpha)
-    return __Jack_C_coefficient__(kappa, alpha) * jack
+    return JackPol(n, kappa, mpq(2), which = 'C')
 
 
 def ZonalQPol(n, kappa):
@@ -206,11 +219,9 @@ def ZonalQPol(n, kappa):
         `x_1`, ..., `x_n`, with rational coefficients.
     
     """
-    alpha = mpq(1, 2)
-    jack = JackPol(n, kappa, alpha)
-    return __Jack_C_coefficient__(kappa, alpha) * jack
+    return JackPol(n, kappa, mpq(1,2), which = 'C')
 
-def JackSymbolicPol(n, kappa):
+def JackSymbolicPol(n, kappa, which = 'J'):
     """
     Jack polynomial of an integer partition, with symbolic Jack parameter.
 
@@ -220,24 +231,24 @@ def JackSymbolicPol(n, kappa):
         Positive integer, the number of variables of the polynomial.
     kappa : IntegerPartition
         An integer partition obtained with `sympy.combinatorics.partitions`.
+    which: character
+        Which Jack polynomial, either `'J'`, `'C'`, `'P'` or `'Q'`.
 
     Returns
     -------
     Poly
         The Jack polynomial of `kappa` in `n` variables `x_1`, ..., `x_n`, 
         with symbolic Jack parameter denoted by `alpha`. The domain of 
-        this polynomial is `'QQ(alpha)`.
+        this polynomial is `'QQ(alpha)'`.
     
     Examples
     --------
-    >>> from gmpy2 import mpq
     >>> from sympy.combinatorics.partitions import IntegerPartition
     >>> from jackpy.jack import JackSymbolicPol
     >>>
-    >>> poly = JackSymbolicPol(3, IntegerPartition([2, 1]))
+    >>> poly = JackSymbolicPol(2, IntegerPartition([2, 1]))
     >>> print(poly)
-    Poly(7/2*x_1**2*x_2 + 7/2*x_1**2*x_3 + 7/2*x_1*x_2**2 + 6*x_1*x_2*x_3
-    + 7/2*x_1*x_3**2 + 7/2*x_2**2*x_3 + 7/2*x_2*x_3**2, x_1, x_2, x3, domain='QQ')
+    Poly((alpha + 2)*x_1**2*x_2 + (alpha + 2)*x_1*x_2**2, x_1, x_2, domain='QQ(alpha)')
 
     """
-    return JackPol(n, kappa, symbols("alpha"))
+    return JackPol(n, kappa, symbols("alpha"), which)
