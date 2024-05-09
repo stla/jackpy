@@ -144,8 +144,10 @@ def JackPol(n, kappa, alpha):
                 if nu[i-1] > 1:
                     s = s + jac(m, i, mu, _nu, gamma)
                 else:
-                    s = s + jac(m-1, 0, _nu, _nu, 1) * gamma
-                    * x[m-1]**(np.sum(mu) - np.sum(_nu))
+                    s = (
+                        s + jac(m-1, 0, _nu, _nu, 1) * gamma
+                        * x[m-1]**(np.sum(mu) - np.sum(_nu))
+                    )
             i += 1
         if k == 0:
             S[__N__(kappa_, nu)-1, m-1] = s

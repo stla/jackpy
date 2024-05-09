@@ -3,7 +3,7 @@ from sympy.combinatorics.partitions import IntegerPartition
 from sympy.combinatorics.generators import symmetric
 from sympy import symbols, Poly
 import numpy as np
-from .internal import partition_to_array
+from .internal import __partition_to_array__
 
 def perms(mu):
     symgroup = symmetric(len(mu))
@@ -36,7 +36,7 @@ def msf_poly(n, kappa):
     if not isinstance(kappa, IntegerPartition):
         raise ValueError("`kappa` must be a SymPy integer partition.")
     variables = [symbols(f'x_{i}') for i in range(1, n+1)]
-    kappa_ = partition_to_array(kappa)
+    kappa_ = __partition_to_array__(kappa)
     l = len(kappa_)
     if l > n:
         return Poly(0, *variables, domain='ZZ')
