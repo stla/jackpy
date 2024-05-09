@@ -6,10 +6,12 @@ from sympy import symbols, Poly
 
 def test_schurpol():
     n = 4
-    x_0, x_1, x_2, x_3 = symbols("x_0, x_1, x_2, x_3")
-    expected = (
-        Poly(x_0, x_0) + Poly(x_1, x_1) + Poly(x_2, x_2) + Poly(x_3, x_3) 
-    )**n
+    v1, v2, v3, v4 = symbols("x_1, x_2, x_3, x_4")
+    x_1 = Poly(v1, v1, domain='ZZ')
+    x_2 = Poly(v2, v2, domain='ZZ')
+    x_3 = Poly(v3, v3, domain='ZZ')
+    x_4 = Poly(v4, v4, domain='ZZ')
+    expected = (x_1 + x_2 + x_3 + x_4)**n
     obtained = (
         SchurPol(n, IntegerPartition([4]))
         + 3 * SchurPol(n, IntegerPartition([3,1]))

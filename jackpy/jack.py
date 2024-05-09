@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-from gmpy2 import mpq, mpz, fac
+from gmpy2 import mpq, fac
 import numpy as np
 from sympy import symbols, Poly
 from sympy.combinatorics.partitions import IntegerPartition
 from .internal import (
-    partition_to_array,
-    hook_lengths_gmp,
-    _N,
-    _betaratio,
-    constant_poly,
-    _is_number
+    __get_domain__,
+    __partition_to_array__,
+    __hook_lengths_gmp__,
+    __N__,
+    __betaratio__
 )
+from numbers import Real 
 
 def SchurPol(n, kappa):
     """
@@ -26,7 +26,8 @@ def SchurPol(n, kappa):
     Returns
     -------
     Poly
-        The Schur polynomial of `kappa`. It has integer coefficents.
+        The Schur polynomial of `kappa` in `n` variables `x_1`, ..., `x_n`, 
+        with integer coefficents.
     
     Examples
     --------
@@ -34,26 +35,26 @@ def SchurPol(n, kappa):
     >>> from jackpy.jack import SchurPol
     >>> p = SchurPol(2, IntegerPartition([2,1]))
     >>> print(p)
-    Poly(x_1**2*x_0 + x_1*x_0**2, x_1, x_0, domain='ZZ')
-    >>> y = p.eval({x_0: 1, x_1: 1})
+    Poly(x_1*x_2**2 + x_1**2*x_2, x_1, x_2, domain='ZZ')
+    >>> y = p.eval({x_1: 1, x_2: 1})
     >>> print(y)
     2
 
     """
-    if not isinstance(n, int):
-        raise ValueError("`n` must be a integer.")
-    if n < 1:
-        raise ValueError("`n` must be at least one.")
+    if not (isinstance(n, int) and n >= 1):
+        raise ValueError("`n` must be a strictly positive integer.")
     if not isinstance(kappa, IntegerPartition):
         raise ValueError("`kappa` must be a SymPy integer partition.")
+    variables = [symbols(f'x_{i}') for i in range(1, n+1)]
+    x = [Poly(v, *variables, domain='ZZ') for v in variables]
     def sch(m, k, nu):
         if len(nu) == 0 or nu[0] == 0 or m == 0:
-            return constant_poly(1)
+            return Poly(1, *variables, domain='ZZ')
         if len(nu) > m and nu[m] > 0:
-            return constant_poly(0)
+            return Poly(0, *variables, domain='ZZ')
         if m == 1:
-            return Poly(x[0]**nu[0], x[0])
-        s = S[_N(kappa_, nu)-1, m-1]
+            return x[0]**nu[0]
+        s = S[__N__(kappa_, nu)-1, m-1]
         if s is not None:
             return s
         s = sch(m-1, 1, nu)
@@ -63,16 +64,15 @@ def SchurPol(n, kappa):
                 _nu = nu.copy()
                 _nu[i-1] = nu[i-1]-1
                 if nu[i-1] > 1:
-                    s = s + Poly(x[m-1], x[m-1]) * sch(m, i, _nu)
+                    s = s + x[m-1] * sch(m, i, _nu)
                 else:
-                    s = s + Poly(x[m-1], x[m-1]) * sch(m-1, 1, _nu)
+                    s = s + x[m-1] * sch(m-1, 1, _nu)
             i = i + 1
         if k == 1:
-            S[_N(kappa_, nu)-1, m-1] = s
+            S[__N__(kappa_, nu)-1, m-1] = s
         return s
-    x = [symbols(f'x_{i}') for i in range(n)]
-    kappa_ = partition_to_array(kappa)
-    S = np.full((_N(kappa_,kappa_), n), None)
+    kappa_ = __partition_to_array__(kappa)
+    S = np.full((__N__(kappa_,kappa_), n), None)
     return sch(n, 1, kappa_)
 
 
@@ -92,8 +92,9 @@ def JackPol(n, kappa, alpha):
     Returns
     -------
     Poly
-        The Jack polynomial of `kappa` with parameter `alpha`. The type of 
-        its coefficients depend on the type of `alpha`.
+        The Jack polynomial of `kappa` in `n` variables `x_1`, ..., `x_n`, 
+        with Jack parameter `alpha`. The type of 
+        its coefficients depends on the type of `alpha`.
     
     Examples
     --------
@@ -103,66 +104,65 @@ def JackPol(n, kappa, alpha):
     >>>
     >>> poly = JackPol(3, IntegerPartition([2, 1]), alpha = mpq(3, 2))
     >>> print(poly)
-    Poly(7/2*x_0**2*x_1 + 7/2*x_0**2*x_2 + 7/2*x_0*x_1**2 + 6*x_0*x_1*x_2
-    + 7/2*x_0*x_2**2 + 7/2*x_1**2*x_2 + 7/2*x_1*x_2**2, x_0, x_1, x_2, domain='QQ')
+    Poly(7/2*x_1**2*x_2 + 7/2*x_1**2*x_3 + 7/2*x_1*x_2**2 + 6*x_1*x_2*x_3
+    + 7/2*x_1*x_3**2 + 7/2*x_2**2*x_3 + 7/2*x_2*x_3**2, x_1, x_2, x3, domain='QQ')
 
     """
-    if not isinstance(n, int):
-        raise ValueError("`n` must be a integer.")
-    if n < 1:
-        raise ValueError("`n` must be at least one.")
+    if not (isinstance(n, int) and n >= 1):
+        raise ValueError("`n` must be a strictly positive integer.")
     if not isinstance(kappa, IntegerPartition):
         raise ValueError("`kappa` must be a SymPy integer partition.")
-    if not _is_number(alpha) and type(alpha) != type(mpz(0)) and type(alpha) != type(mpq(0)):
+    if not isinstance(alpha, Real):
         raise ValueError("`alpha` must be a real number.")
     if alpha <= 0:
         raise ValueError("`alpha` must be positive.")
+    domain = __get_domain__(alpha)
+    variables = [symbols(f'x_{i}') for i in range(1, n+1)]
+    x = [Poly(v, *variables, domain=domain) for v in variables]
     def jac(m, k, mu, nu, beta):
         if len(nu) == 0 or nu[0] == 0 or m == 0:
-            return constant_poly(1)
+            return Poly(1, *variables, domain=domain)
         if len(nu) > m and nu[m] > 0:
-            return constant_poly(0)
+            return Poly(0, *variables, domain=domain)
         if m == 1:
             coef = np.prod(alpha * np.arange(1, nu[0]) + 1)
-            return Poly(coef * x[0]**nu[0], x[0]) 
-        s = S[_N(kappa_,nu)-1, m-1]
+            return coef * x[0]**nu[0]
+        s = S[__N__(kappa_,nu)-1, m-1]
         if k == 0 and s is not None:
             return s
         i = max(1, k)
         s = (
             jac(m-1, 0, nu, nu, 1)
             * beta
-            * Poly(x[m-1]**(np.sum(mu) - np.sum(nu)), x[m-1])
+            * x[m-1]**(np.sum(mu) - np.sum(nu))
         )
         while len(nu) >= i and nu[i-1] > 0:
             if len(nu) == i or nu[i-1] > nu[i]:
                 _nu = nu.copy()
                 _nu[i-1] = nu[i-1]-1
-                gamma = beta * _betaratio(mu, nu, i-1, alpha)
+                gamma = beta * __betaratio__(mu, nu, i-1, alpha)
                 if nu[i-1] > 1:
                     s = s + jac(m, i, mu, _nu, gamma)
                 else:
-                    s = s + jac(m-1, 0, _nu, _nu, 1) * gamma * Poly(
-                        x[m-1]**(np.sum(mu) - np.sum(_nu)), x[m-1]
-                    )
+                    s = s + jac(m-1, 0, _nu, _nu, 1) * gamma
+                    * x[m-1]**(np.sum(mu) - np.sum(_nu))
             i += 1
         if k == 0:
-            S[_N(kappa_, nu)-1, m-1] = s
+            S[__N__(kappa_, nu)-1, m-1] = s
         return s
-    x = [symbols(f'x_{i}') for i in range(n)]
-    kappa_ = partition_to_array(kappa)
-    S = np.full((_N(kappa_,kappa_), n), None)
+    kappa_ = __partition_to_array__(kappa)
+    S = np.full((__N__(kappa_,kappa_), n), None)
     return jac(n, 0, kappa_, kappa_, 1)
 
 
-def ZonalPol(m, kappa):
+def ZonalPol(n, kappa):
     """
     Zonal polynomial of an integer partition. Up to a normalization, this is 
     the Jack polynomial of the integer partition with paramater `alpha = 2`.
 
     Parameters
     ----------
-    m : int
+    n : int
         Positive integer, the number of variables of the polynomial.
     kappa : IntegerPartition
         An integer partition obtained with `sympy.combinatorics.partitions`.
@@ -170,24 +170,19 @@ def ZonalPol(m, kappa):
     Returns
     -------
     Poly
-        The zonal polynomial of `kappa`. It has rational coefficients.
+        The zonal polynomial of `kappa` in `n` variables
+        `x_1`, ..., `x_n`, with rational coefficients.
     
     """
-    if not isinstance(m, int):
-        raise ValueError("`m` must be a integer.")
-    if m < 1:
-        raise ValueError("`m` must be at least one.")
-    if not isinstance(kappa, IntegerPartition):
-        raise ValueError("`kappa` must be a SymPy integer partition.")
     alpha = mpq(2)
-    jack = JackPol(m, kappa, alpha)
-    (hooku, hookl) = hook_lengths_gmp(kappa, alpha)
+    jack = JackPol(n, kappa, alpha)
+    (hooku, hookl) = __hook_lengths_gmp__(kappa, alpha)
     jlambda = np.prod(hooku) * np.prod(hookl)
-    n = int(np.sum(partition_to_array(kappa)))
-    return (alpha**n * fac(n) / jlambda) * jack
+    k = int(np.sum(__partition_to_array__(kappa)))
+    return (alpha**k * fac(k) / jlambda) * jack
 
 
-def ZonalQPol(m, kappa):
+def ZonalQPol(n, kappa):
     """
     Quaternionic zonal polynomial of an integer partition. Up to a 
     normalization, this is the Jack polynomial of the integer partition with 
@@ -195,7 +190,7 @@ def ZonalQPol(m, kappa):
 
     Parameters
     ----------
-    m : int
+    n : int
         Positive integer, the number of variables of the polynomial.
     kappa : IntegerPartition
         An integer partition obtained with `sympy.combinatorics.partitions`.
@@ -203,19 +198,13 @@ def ZonalQPol(m, kappa):
     Returns
     -------
     Poly
-        The quaternionic zonal polynomial of `kappa`. 
-        It has rational coefficients.
+        The quaternionic zonal polynomial of `kappa` in `n` variables
+        `x_1`, ..., `x_n`, with rational coefficients.
     
     """
-    if not isinstance(m, int):
-        raise ValueError("`m` must be a integer.")
-    if m < 1:
-        raise ValueError("`m` must be at least one.")
-    if not isinstance(kappa, IntegerPartition):
-        raise ValueError("`kappa` must be a SymPy integer partition.")
     alpha = mpq(1, 2)
-    jack = JackPol(m, kappa, alpha)
-    (hooku, hookl) = hook_lengths_gmp(kappa, alpha)
+    jack = JackPol(n, kappa, alpha)
+    (hooku, hookl) = __hook_lengths_gmp__(kappa, alpha)
     jlambda = np.prod(hooku) * np.prod(hookl)
-    n = int(np.sum(partition_to_array(kappa)))
-    return (alpha**n * fac(n) / jlambda) * jack
+    k = int(np.sum(__partition_to_array__(kappa)))
+    return (alpha**k * fac(k) / jlambda) * jack
