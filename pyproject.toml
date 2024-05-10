@@ -3,7 +3,7 @@ name = "jackpolynomials"
 packages = [
     { include = "jackpy" },
 ]
-version = "1.0.0"
+version = "0.1.0.9000"
 description = "Jack polynomials."
 homepage = "https://github.com/stla/jackpy"
 authors = ["Stéphane Laurent <laurent_step@outlook.fr>"]

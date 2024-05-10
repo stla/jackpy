@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from gmpy2 import fac
 import numpy as np
-from sympy import symbols, Poly
 from numbers import Rational, Real
 
 def __get_domain__(x):

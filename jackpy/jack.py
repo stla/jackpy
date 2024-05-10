@@ -3,7 +3,7 @@ from gmpy2 import mpq
 import numpy as np
 from sympy import symbols, Poly, Symbol
 from sympy.combinatorics.partitions import IntegerPartition
-from jackpy.internal import (
+from .internal import (
     __get_domain__,
     __partition_to_array__,
     __N__,
