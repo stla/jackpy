@@ -54,13 +54,15 @@ def msp_combination(poly):
     Parameters
     ----------
     p : Poly
-        Polynomial.It must be symmetric, otherwise the output of this function makes no sense. 
+        Polynomial. It must be symmetric, otherwise the output of this function makes no sense. 
 
     Returns
     -------
     dict
-        A dictionary representing the linear combination. Each key represents
-        the integer partition of a mon
+        A dictionary representing the linear combination. A key represents
+        the integer partition of a monomial symmetric polynomial, and the value
+        attached to this key is the coefficient of this monomial symmetric 
+        polynomial.
 
     """
     out = {}

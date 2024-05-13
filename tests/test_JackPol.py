@@ -1,8 +1,28 @@
 # -*- coding: utf-8 -*-
 from gmpy2 import mpq
 from sympy.combinatorics.partitions import IntegerPartition
+from sympy import symbols, Poly
 from jackpy.jack import JackPol, SchurPol
-from jackpy.monomial_symmetric import monomial_symmetric_polynomial
+from jackpy.monomial_symmetric import (
+        monomial_symmetric_polynomial
+    ,   msp_combination
+    )
+
+def check_mscombo(poly):
+    combo = msp_combination(poly)
+    n = len(poly.gens)
+    variables = [symbols(f'x_{i}') for i in range(1, n+1)]
+    kappas = combo.keys()
+    q = Poly(0, *variables)
+    for kappa in kappas:
+        part = IntegerPartition(kappa)
+        q = q + combo.get(kappa)*monomial_symmetric_polynomial(n, part)
+    return q.as_dict()
+
+def test_msp_combination():
+    jp = JackPol(6, IntegerPartition([3,2,1]), mpq(2, 7))
+    dic = check_mscombo(jp)
+    assert dic == jp.as_dict()
 
 def test_jackpol():
     mu = IntegerPartition([3,1])
