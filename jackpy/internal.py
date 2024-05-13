@@ -2,6 +2,26 @@
 from gmpy2 import fac
 import numpy as np
 from numbers import Rational, Real
+from sympy.utilities.iterables import multiset_permutations
+
+def __is_decreasing__(x):
+    l = len(x)
+    i = 0
+    out = True
+    while i < l-1 and out:
+        out = x[i] >= x[i+1]
+        i = i + 1
+    return out
+
+def __drop_trailing_zeros__(x):
+    n = len(x) - 1
+    while n >= 0 and x[n] == 0:
+        x.pop()
+        n = n - 1
+    return x
+
+def __permutations__(mu):
+    return list(multiset_permutations(mu))
 
 def __get_domain__(x):
     if isinstance(x, Rational):
@@ -10,7 +30,6 @@ def __get_domain__(x):
         return 'RR'
     else:
         return None    
-
 
 def __partition_to_array__(mu):
     d = mu.as_dict()
