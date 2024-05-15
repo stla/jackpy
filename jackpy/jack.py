@@ -47,7 +47,7 @@ def SchurPol(n, kappa):
     kappa_ = __make_partition__(kappa)
     variables = [symbols(f'x_{i}') for i in range(1, n+1)]
     x = [Poly(v, *variables, domain='ZZ') for v in variables]
-    def sch(m, k, nu):
+    def sch(S, m, k, nu):
         if len(nu) == 0 or nu[0] == 0 or m == 0:
             return Poly(1, *variables, domain='ZZ')
         if len(nu) > m and nu[m] > 0:
@@ -56,24 +56,24 @@ def SchurPol(n, kappa):
             return x[0]**nu[0]
         N = __N__(kappa_, nu)
         s = S[N-1, m-1]
-        if k == 1 and s is not None:
+        if s is not None:
             return s
-        s = sch(m-1, 1, nu)
+        s = sch(S.copy(), m-1, 1, nu)
         i = k
         while len(nu) >= i and nu[i-1] > 0:
             if len(nu) == i or nu[i-1] > nu[i]:
                 _nu = nu.copy()
                 _nu[i-1] = nu[i-1]-1
                 if nu[i-1] > 1:
-                    s = s + x[m-1] * sch(m, i, _nu)
+                    s = s + x[m-1] * sch(S.copy(), m, i, _nu)
                 else:
-                    s = s + x[m-1] * sch(m-1, 1, _nu)
+                    s = s + x[m-1] * sch(S.copy(), m-1, 1, _nu)
             i = i + 1
         if k == 1:
             S[__N__(kappa_, nu)-1, m-1] = s
         return s
     S = np.full((__N__(kappa_,kappa_), n), None)
-    return sch(n, 1, kappa_)
+    return sch(S.copy(), n, 1, kappa_)
 
 
 def JackPol(n, kappa, alpha, which = 'J'):
@@ -129,7 +129,7 @@ def JackPol(n, kappa, alpha, which = 'J'):
         raise ValueError("`which` must be either 'J', 'C', 'P' or 'Q'.")
     variables = [symbols(f'x_{i}') for i in range(1, n+1)]
     x = [Poly(v, *variables, domain=domain) for v in variables]
-    def jac(m, k, mu, nu, beta):
+    def jac(S, m, k, mu, nu, beta):
         if len(nu) == 0 or nu[0] == 0 or m == 0:
             return Poly(1, *variables, domain=domain)
         if len(nu) > m and nu[m] > 0:
@@ -142,7 +142,7 @@ def JackPol(n, kappa, alpha, which = 'J'):
             return s
         i = max(1, k)
         s = (
-            jac(m-1, 0, nu, nu, 1)
+            jac(S.copy(), m-1, 0, nu, nu, 1)
             * beta
             * x[m-1]**(np.sum(mu) - np.sum(nu))
         )
@@ -152,10 +152,10 @@ def JackPol(n, kappa, alpha, which = 'J'):
                 _nu[i-1] = nu[i-1]-1
                 gamma = beta * __betaratio__(mu, nu, i-1, alpha)
                 if nu[i-1] > 1:
-                    s = s + jac(m, i, mu, _nu, gamma)
+                    s = s + jac(S.copy(), m, i, mu, _nu, gamma)
                 else:
                     s = (
-                        s + jac(m-1, 0, _nu, _nu, 1) * gamma
+                        s + jac(S.copy(), m-1, 0, _nu, _nu, 1) * gamma
                         * x[m-1]**(np.sum(mu) - np.sum(_nu))
                     )
             i += 1
@@ -163,7 +163,7 @@ def JackPol(n, kappa, alpha, which = 'J'):
             S[__N__(kappa_, nu)-1, m-1] = s
         return s
     S = np.full((__N__(kappa_,kappa_), n), None)
-    jp = jac(n, 0, kappa_, kappa_, 1)
+    jp = jac(S.copy(), n, 0, kappa_, kappa_, 1)
     if which != 'J':
         if which == 'C':
             jp = __Jack_C_coefficient__(kappa_, alpha) * jp
