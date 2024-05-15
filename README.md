@@ -4,7 +4,17 @@
 [![Documentation status](https://readthedocs.org/projects/jackpy/badge/)](http://jackpy.readthedocs.io)
 <!-- badges: end -->
 
-Jack polynomials with Python.
+***Jack, zonal, and Schur polynomials with Python.***
+
+Schur polynomials have applications in combinatorics and zonal polynomials have
+applications in multivariate statistics. They are particular cases of
+[Jack polynomials](https://en.wikipedia.org/wiki/Jack_function). This package
+allows to get these polynomials.
+
+___
+
+The Jack polynomial in three variables of the integer partition $(2,1)$, with 
+parameter $3/2$:
 
 ```python
 >>> from gmpy2 import mpq
@@ -16,6 +26,10 @@ Jack polynomials with Python.
 Poly(7/2*x_1**2*x_2 + 7/2*x_1**2*x_3 + 7/2*x_1*x_2**2 + 6*x_1*x_2*x_3 
  + 7/2*x_1*x_3**2 + 7/2*x_2**2*x_3 + 7/2*x_2*x_3**2, x_1, x_2, x_3, domain='QQ')
 ```
+
+By default, `JackPol` returns the Jack $J$-polynomial. It can also return 
+the Jack $C$-polynomial, the Jack $P$-polynomial, and the Jack $Q$-polynomial,
+by using the `which` argument.
 
 The expression of a Jack polynomial can be long. Since a Jack polynomial is 
 symmetric, it is possible to write it as a linear combination of some 
@@ -39,8 +53,8 @@ Poly(84*x_1**2*x_2**2 + 28*x_1**2*x_2*x_3 + 28*x_1**2*x_2*x_4
 24*M[1;1;1;1] + 28*M[2;1;1] + 84*M[2;2]
 ```
 
-Here `M[1;1;1;1]` represents the monomial symmetric polynomial of the 
-integer partition $(1,1,1,1)$.
+Here the symbol `M[1;1;1;1]` represents the monomial symmetric polynomial of 
+the integer partition $(1,1,1,1)$.
 
 As of the development version `0.1.0.9000`, it is possible to get Jack polynomials with a symbolic 
 Jack parameter. These polynomials have domain `'QQ(alpha)'`, where `alpha` is
