@@ -227,8 +227,9 @@ def JackSymbolicPol(n, kappa, which = 'J'):
     ----------
     n : int
         Positive integer, the number of variables of the polynomial.
-    kappa : IntegerPartition
-        An integer partition obtained with `sympy.combinatorics.partitions`.
+    kappa : list of integers
+        An integer partition given as a list of decreasing integers. Trailing 
+        zeros are dropped.
     which: character
         Which Jack polynomial, either `'J'`, `'C'`, `'P'` or `'Q'`.
 
@@ -241,10 +242,9 @@ def JackSymbolicPol(n, kappa, which = 'J'):
     
     Examples
     --------
-    >>> from sympy.combinatorics.partitions import IntegerPartition
     >>> from jackpy.jack import JackSymbolicPol
     >>>
-    >>> poly = JackSymbolicPol(2, IntegerPartition([2, 1]))
+    >>> poly = JackSymbolicPol(2, [2, 1])
     >>> print(poly)
     Poly((alpha + 2)*x_1**2*x_2 + (alpha + 2)*x_1*x_2**2, x_1, x_2, domain='QQ(alpha)')
 

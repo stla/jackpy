@@ -22,7 +22,7 @@ copyright = '2021-2024, Stéphane Laurent'
 author = 'Stéphane Laurent'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0.0'
+release = '0.1.0.9000'
 
 
 # -- General configuration ---------------------------------------------------
