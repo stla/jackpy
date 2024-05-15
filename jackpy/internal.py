@@ -2,7 +2,13 @@
 from gmpy2 import fac
 import numpy as np
 from numbers import Rational, Real
+from sympy import symbols
 from sympy.utilities.iterables import multiset_permutations
+
+def __msp_symbol__(t):
+     string = "M[" + ";".join([str(i) for i in t]) + "]"
+     return symbols(string, commutative=False)
+
 
 def __is_decreasing__(x):
     l = len(x)
@@ -13,6 +19,7 @@ def __is_decreasing__(x):
         i = i + 1
     return out
 
+
 def __drop_trailing_zeros__(x):
     n = len(x) - 1
     while n >= 0 and x[n] == 0:
@@ -20,8 +27,10 @@ def __drop_trailing_zeros__(x):
         n = n - 1
     return x
 
+
 def __permutations__(mu):
     return list(multiset_permutations(mu))
+
 
 def __get_domain__(x):
     if isinstance(x, Rational):
@@ -31,11 +40,13 @@ def __get_domain__(x):
     else:
         return None    
 
+
 def __partition_to_array__(mu):
     d = mu.as_dict()
     if len(d) == 0:
         return np.asarray([], dtype=int)
     return np.repeat(list(d.keys()), list(d.values()))
+
 
 def __hook_lengths_lower__(mu, alpha):
     mu_prime = np.array(mu.conjugate)

@@ -32,6 +32,8 @@ Members functions
 
 .. automodule:: jackpy.jack
     :members:
+.. automodule:: jackpy.monomial_symmetric
+    :members:
 
 
 References

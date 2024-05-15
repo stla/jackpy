@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from sympy.combinatorics.partitions import IntegerPartition
-from sympy import symbols, Poly
+from sympy import symbols, Poly, parse_expr
 import numpy as np
 from .internal import (
         __partition_to_array__
     ,   __permutations__
     ,   __drop_trailing_zeros__
     ,   __is_decreasing__
+    ,   __msp_symbol__
     )
 
 def monomial_symmetric_polynomial(n, kappa):
@@ -71,4 +72,12 @@ def msp_combination(poly):
         if __is_decreasing__(exponents):
             kappa = __drop_trailing_zeros__(list(exponents))
             out[tuple(kappa)] = d.get(exponents)
+    return out
+
+def msp_combination_expr(poly):
+    combo = msp_combination(poly)
+    kappas = combo.keys();
+    out = parse_expr("0")
+    for kappa in kappas:
+        out = out + combo.get(kappa)*__msp_symbol__(kappa)
     return out

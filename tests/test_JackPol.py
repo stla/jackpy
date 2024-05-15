@@ -6,6 +6,7 @@ from jackpy.jack import JackPol, SchurPol
 from jackpy.monomial_symmetric import (
         monomial_symmetric_polynomial
     ,   msp_combination
+    ,   msp_combination_expr
     )
 
 def check_mscombo(poly):
@@ -23,6 +24,23 @@ def test_msp_combination():
     jp = JackPol(6, IntegerPartition([3,2,1]), mpq(2, 7))
     dic = check_mscombo(jp)
     assert dic == jp.as_dict()
+
+def test_msp_combination_expr():
+    mu = IntegerPartition([3,1])
+    alpha = mpq(5, 2)
+    m = 4
+    jp = JackPol(m, mu, alpha)
+    expr = msp_combination_expr(jp)
+    expected = (
+        (2*alpha**2 + 4*alpha + 2) 
+        * symbols("M[3;1]", commutative=False)
+        + (6*alpha + 10) 
+        * symbols("M[2;1;1]", commutative=False)
+        + (4*alpha + 4) 
+        * symbols("M[2;2]", commutative=False)
+        + 24 * symbols("M[1;1;1;1]", commutative=False)
+    )
+    assert expr == expected
 
 def test_jackpol():
     mu = IntegerPartition([3,1])
