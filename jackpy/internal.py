@@ -4,6 +4,7 @@ import numpy as np
 from numbers import Rational, Real
 from sympy import symbols
 from sympy.utilities.iterables import multiset_permutations
+from sympy.combinatorics.partitions import IntegerPartition
 
 def __msp_symbol__(t):
      string = "M[" + ";".join([str(i) for i in t]) + "]"
@@ -28,6 +29,16 @@ def __drop_trailing_zeros__(x):
     return x
 
 
+def __make_partition__(x):
+    mu = __drop_trailing_zeros__(x)
+    integers = map(lambda i: isinstance(i, int), mu)
+    if not all(integers):
+        raise ValueError("invalid integer partition.")
+    if not __is_decreasing__(list(mu) + [0]):
+        raise ValueError("invalid integer partition.")
+    return np.asarray(mu, dtype=int)
+    
+
 def __permutations__(mu):
     return list(multiset_permutations(mu))
 
@@ -41,51 +52,48 @@ def __get_domain__(x):
         return None    
 
 
-def __partition_to_array__(mu):
-    d = mu.as_dict()
-    if len(d) == 0:
-        return np.asarray([], dtype=int)
-    return np.repeat(list(d.keys()), list(d.values()))
+# def __partition_to_array__(mu):
+#     d = mu.as_dict()
+#     if len(d) == 0:
+#         return np.asarray([], dtype=int)
+#     return np.repeat(list(d.keys()), list(d.values()))
 
 
 def __hook_lengths_lower__(mu, alpha):
-    mu_prime = np.array(mu.conjugate)
-    mu_ = __partition_to_array__(mu)
-    i = np.repeat(np.arange(len(mu_)), mu_)
-    j = np.concatenate([np.arange(n) for n in mu_])
-    x = mu_prime[j] - i + alpha*(mu_[i] - j) 
+    mu_prime = np.array(IntegerPartition(mu).conjugate)
+    i = np.repeat(np.arange(len(mu)), mu)
+    j = np.concatenate([np.arange(n) for n in mu])
+    x = mu_prime[j] - i + alpha*(mu[i] - j) 
     return x - alpha
 
 def __hook_lengths_upper__(mu, alpha):
-    mu_prime = np.array(mu.conjugate)
-    mu_ = __partition_to_array__(mu)
-    i = np.repeat(np.arange(len(mu_)), mu_)
-    j = np.concatenate([np.arange(n) for n in mu_])
-    x = mu_prime[j] - i + alpha*(mu_[i] - j) 
+    mu_prime = np.array(IntegerPartition(mu).conjugate)
+    i = np.repeat(np.arange(len(mu)), mu)
+    j = np.concatenate([np.arange(n) for n in mu])
+    x = mu_prime[j] - i + alpha*(mu[i] - j) 
     return x - 1
 
 def __hook_lengths__(mu, alpha):
-    mu_prime = np.array(mu.conjugate)
-    mu_ = __partition_to_array__(mu)
-    i = np.repeat(np.arange(len(mu_)), mu_)
-    j = np.concatenate([np.arange(n) for n in mu_])
-    x = mu_prime[j] - i + alpha*(mu_[i] - j) 
+    mu_prime = np.array(IntegerPartition(mu).conjugate)
+    i = np.repeat(np.arange(len(mu)), mu)
+    j = np.concatenate([np.arange(n) for n in mu])
+    x = mu_prime[j] - i + alpha*(mu[i] - j) 
     return (x - alpha, x - 1)
 
 def __Jack_C_coefficient__(kappa, alpha):
     (hookl, hooku) = __hook_lengths__(kappa, alpha)
     jlambda = np.prod(hooku) * np.prod(hookl)
-    k = int(np.sum(__partition_to_array__(kappa)))
+    k = int(np.sum(kappa))
     return alpha**k * fac(k) / jlambda
 
 def __Jack_P_coefficient__(kappa, alpha):
-    if len(kappa.as_dict()) == 0:
+    if len(kappa) == 0:
         return 1
     hookl = __hook_lengths_lower__(kappa, alpha)
     return 1 / np.prod(hookl)
     
 def __Jack_Q_coefficient__(kappa, alpha):
-    if len(kappa.as_dict()) == 0:
+    if len(kappa) == 0:
         return 1
     hooku = __hook_lengths_upper__(kappa, alpha)
     return 1 / np.prod(hooku)

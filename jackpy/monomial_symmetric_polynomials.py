@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from sympy.combinatorics.partitions import IntegerPartition
 from sympy import symbols, Poly, parse_expr
 import numpy as np
 from .internal import (
-        __partition_to_array__
+        __make_partition__
     ,   __permutations__
     ,   __drop_trailing_zeros__
     ,   __is_decreasing__
@@ -18,8 +17,9 @@ def monomial_symmetric_polynomial(n, kappa):
     ----------
     n : int
         Positive integer, the number of variables of the polynomial.
-    kappa : IntegerPartition
-        An integer partition obtained with `sympy.combinatorics.partitions`.
+    kappa : list of integers
+        An integer partition given as a list of decreasing integers. Trailing 
+        zeros are dropped.
 
     Returns
     -------
@@ -30,10 +30,8 @@ def monomial_symmetric_polynomial(n, kappa):
     """
     if not (isinstance(n, int) and n >= 1):
         raise ValueError("`n` must be a strictly positive integer.")
-    if not isinstance(kappa, IntegerPartition):
-        raise ValueError("`kappa` must be a SymPy integer partition.")
     variables = [symbols(f'x_{i}') for i in range(1, n+1)]
-    kappa_ = __partition_to_array__(kappa)
+    kappa_ = __make_partition__(kappa)
     l = len(kappa_)
     if l > n:
         return Poly(0, *variables, domain='ZZ')

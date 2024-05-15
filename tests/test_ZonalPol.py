@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from sympy.combinatorics.partitions import IntegerPartition
 from jackpy.jack import ZonalPol
 from sympy import symbols, Poly
 
@@ -13,9 +12,9 @@ def test_zonalpol():
     x_4 = Poly(v4, v4, domain='QQ')
     expected = (x_1 + x_2 + x_3 + x_4)**(n - 1)
     obtained = (
-        ZonalPol(n, IntegerPartition([3]))
-        + ZonalPol(n, IntegerPartition([2,1]))
-        + ZonalPol(n, IntegerPartition([1,1,1]))
+        ZonalPol(n, [3])
+        + ZonalPol(n, [2,1])
+        + ZonalPol(n, [1,1,1])
     )
     assert obtained == expected
 

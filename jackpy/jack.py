@@ -2,10 +2,9 @@
 from gmpy2 import mpq
 import numpy as np
 from sympy import symbols, Poly, Symbol
-from sympy.combinatorics.partitions import IntegerPartition
 from .internal import (
     __get_domain__,
-    __partition_to_array__,
+    __make_partition__,
     __N__,
     __betaratio__,
     __Jack_C_coefficient__,
@@ -22,8 +21,9 @@ def SchurPol(n, kappa):
     ----------
     n : int
         Positive integer, the number of variables of the polynomial.
-    kappa : IntegerPartition
-        An integer partition obtained with `sympy.combinatorics.partitions`.
+    kappa : list of integers
+        An integer partition given as a list of decreasing integers. Trailing 
+        zeros are dropped.
 
     Returns
     -------
@@ -33,9 +33,8 @@ def SchurPol(n, kappa):
     
     Examples
     --------
-    >>> from sympy.combinatorics.partitions import IntegerPartition
     >>> from jackpy.jack import SchurPol
-    >>> p = SchurPol(2, IntegerPartition([2,1]))
+    >>> p = SchurPol(2, [2, 1])
     >>> print(p)
     Poly(x_1*x_2**2 + x_1**2*x_2, x_1, x_2, domain='ZZ')
     >>> y = p.eval({x_1: 1, x_2: 1})
@@ -45,8 +44,7 @@ def SchurPol(n, kappa):
     """
     if not (isinstance(n, int) and n >= 1):
         raise ValueError("`n` must be a strictly positive integer.")
-    if not isinstance(kappa, IntegerPartition):
-        raise ValueError("`kappa` must be a SymPy integer partition.")
+    kappa_ = __make_partition__(kappa)
     variables = [symbols(f'x_{i}') for i in range(1, n+1)]
     x = [Poly(v, *variables, domain='ZZ') for v in variables]
     def sch(m, k, nu):
@@ -74,7 +72,6 @@ def SchurPol(n, kappa):
         if k == 1:
             S[__N__(kappa_, nu)-1, m-1] = s
         return s
-    kappa_ = __partition_to_array__(kappa)
     S = np.full((__N__(kappa_,kappa_), n), None)
     return sch(n, 1, kappa_)
 
@@ -87,8 +84,9 @@ def JackPol(n, kappa, alpha, which = 'J'):
     ----------
     n : int
         Positive integer, the number of variables of the polynomial.
-    kappa : IntegerPartition
-        An integer partition obtained with `sympy.combinatorics.partitions`.
+    kappa : list of integers
+        An integer partition given as a list of decreasing integers. Trailing 
+        zeros are dropped.
     alpha : number
         A positive number, the parameter of the Jack polynomial.
     which: character
@@ -104,10 +102,9 @@ def JackPol(n, kappa, alpha, which = 'J'):
     Examples
     --------
     >>> from gmpy2 import mpq
-    >>> from sympy.combinatorics.partitions import IntegerPartition
     >>> from jackpy.jack import JackPol
     >>>
-    >>> poly = JackPol(3, IntegerPartition([2, 1]), alpha = mpq(3, 2))
+    >>> poly = JackPol(3, [2, 1], alpha = mpq(3, 2))
     >>> print(poly)
     Poly(7/2*x_1**2*x_2 + 7/2*x_1**2*x_3 + 7/2*x_1*x_2**2 + 6*x_1*x_2*x_3
     + 7/2*x_1*x_3**2 + 7/2*x_2**2*x_3 + 7/2*x_2*x_3**2, x_1, x_2, x3, domain='QQ')
@@ -115,8 +112,7 @@ def JackPol(n, kappa, alpha, which = 'J'):
     """
     if not (isinstance(n, int) and n >= 1):
         raise ValueError("`n` must be a strictly positive integer.")
-    if not isinstance(kappa, IntegerPartition):
-        raise ValueError("`kappa` must be a SymPy integer partition.")
+    kappa_ = __make_partition__(kappa)
     if isinstance(alpha, Number):
         if not isinstance(alpha, Real):
             raise ValueError("`alpha` must be a real number.")
@@ -166,30 +162,30 @@ def JackPol(n, kappa, alpha, which = 'J'):
         if k == 0:
             S[__N__(kappa_, nu)-1, m-1] = s
         return s
-    kappa_ = __partition_to_array__(kappa)
     S = np.full((__N__(kappa_,kappa_), n), None)
     jp = jac(n, 0, kappa_, kappa_, 1)
     if which != 'J':
         if which == 'C':
-            jp = __Jack_C_coefficient__(kappa, alpha) * jp
+            jp = __Jack_C_coefficient__(kappa_, alpha) * jp
         elif which == 'P':
-            jp = __Jack_P_coefficient__(kappa, alpha) * jp
+            jp = __Jack_P_coefficient__(kappa_, alpha) * jp
         else:
-            jp = __Jack_Q_coefficient__(kappa, alpha) * jp
+            jp = __Jack_Q_coefficient__(kappa_, alpha) * jp
     return jp
 
 
 def ZonalPol(n, kappa):
     """
-    Zonal polynomial of an integer partition. Up to a normalization, this is 
-    the Jack polynomial of the integer partition with paramater `alpha = 2`.
+    Zonal polynomial of an integer partition. This is the Jack C-polynomial of 
+    this integer partition with parameter `alpha = 2`.
 
     Parameters
     ----------
     n : int
         Positive integer, the number of variables of the polynomial.
-    kappa : IntegerPartition
-        An integer partition obtained with `sympy.combinatorics.partitions`.
+    kappa : list of integers
+        An integer partition given as a list of decreasing integers. Trailing 
+        zeros are dropped.
 
     Returns
     -------
@@ -203,16 +199,16 @@ def ZonalPol(n, kappa):
 
 def ZonalQPol(n, kappa):
     """
-    Quaternionic zonal polynomial of an integer partition. Up to a 
-    normalization, this is the Jack polynomial of the integer partition with 
-    paramater `alpha = 1/2`.
+    Quaternionic zonal polynomial of an integer partition. This is the Jack 
+    C-polynomial of the integer partition with parameter `alpha = 1/2`.
 
     Parameters
     ----------
     n : int
         Positive integer, the number of variables of the polynomial.
-    kappa : IntegerPartition
-        An integer partition obtained with `sympy.combinatorics.partitions`.
+    kappa : list of integers
+        An integer partition given as a list of decreasing integers. Trailing 
+        zeros are dropped.
 
     Returns
     -------
@@ -221,7 +217,7 @@ def ZonalQPol(n, kappa):
         `x_1`, ..., `x_n`, with rational coefficients.
     
     """
-    return JackPol(n, kappa, mpq(1,2), which = 'C')
+    return JackPol(n, kappa, mpq(1, 2), which = 'C')
 
 def JackSymbolicPol(n, kappa, which = 'J'):
     """
