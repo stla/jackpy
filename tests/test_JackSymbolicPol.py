@@ -2,7 +2,7 @@
 from sympy import symbols
 from sympy.combinatorics.partitions import IntegerPartition
 from jackpy.jack import JackSymbolicPol
-from jackpy.monomial_symmetric import (
+from jackpy.monomial_symmetric_polynomials import (
         monomial_symmetric_polynomial
     ,   msp_combination_expr
     )
@@ -36,6 +36,7 @@ def test_symbolic_msp_combination_expr():
         * symbols("M[2;1;1]", commutative=False)
         + (4*alpha + 4) 
         * symbols("M[2;2]", commutative=False)
-        + 24 * symbols("M[1;1;1;1]", commutative=False)
+        + 24 
+        * symbols("M[1;1;1;1]", commutative=False)
     )
     assert expr == expected

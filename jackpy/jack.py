@@ -12,7 +12,7 @@ from .internal import (
     __Jack_P_coefficient__,
     __Jack_Q_coefficient__
 )
-from numbers import Real, Number 
+from numbers import Real, Number, Integral 
 
 def SchurPol(n, kappa):
     """
@@ -122,6 +122,8 @@ def JackPol(n, kappa, alpha, which = 'J'):
             raise ValueError("`alpha` must be a real number.")
         if alpha <= 0:
             raise ValueError("`alpha` must be positive.")
+        if isinstance(alpha, Integral):
+            alpha = mpq(alpha)
         domain = __get_domain__(alpha)
     elif isinstance(alpha, Symbol):
         domain = 'QQ(alpha)'

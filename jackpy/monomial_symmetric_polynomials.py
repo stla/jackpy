@@ -75,9 +75,26 @@ def msp_combination(poly):
     return out
 
 def msp_combination_expr(poly):
+    """
+    Symmetric polynomial as a linear combination of some monomial symmetric polynomials. 
+
+    Parameters
+    ----------
+    p : Poly
+        Polynomial. It must be symmetric, otherwise the output of this function makes no sense. 
+
+    Returns
+    -------
+    expression
+        An expression representing the linear combination. The monomial 
+        symmetric polynomials are represented by symbols, e.g. the monomial 
+        symmetric polynomial of the integer partition `(3,2,1)` is represented 
+        by the symbol `M[3;2;1]`.
+
+    """
     combo = msp_combination(poly)
     kappas = combo.keys();
     out = parse_expr("0")
     for kappa in kappas:
-        out = out + combo.get(kappa)*__msp_symbol__(kappa)
+        out = out + combo.get(kappa) * __msp_symbol__(kappa)
     return out

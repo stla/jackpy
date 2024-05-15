@@ -3,7 +3,7 @@ from gmpy2 import mpq
 from sympy.combinatorics.partitions import IntegerPartition
 from sympy import symbols, Poly
 from jackpy.jack import JackPol, SchurPol
-from jackpy.monomial_symmetric import (
+from jackpy.monomial_symmetric_polynomials import (
         monomial_symmetric_polynomial
     ,   msp_combination
     ,   msp_combination_expr

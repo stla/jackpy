@@ -32,7 +32,7 @@ Members functions
 
 .. automodule:: jackpy.jack
     :members:
-.. automodule:: jackpy.monomial_symmetric
+.. automodule:: jackpy.monomial_symmetric_polynomials
     :members:
 
 
